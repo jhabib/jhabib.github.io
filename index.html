@@ -3,12 +3,12 @@
 <head>
 	<title>US Wildfires</title>
 
-	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-	<script src="https://d3js.org/topojson.v1.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
 	<script src="https://d3js.org/d3-time.v1.min.js"></script>
 	<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
 	<script src="d3.legend.js"></script>
-	<script src="https://public.tableau.com/javascripts/api/tableau-2.0.0.min.js"></script>
+	<script src="http://public.tableau.com/javascripts/api/tableau-2.0.0.min.js"></script>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link href="css/index_style.css" rel="stylesheet" type="text/css">
@@ -32,8 +32,10 @@
 </head>
 
 <body>
-	<div width="200px"><text id="title">US Wildfires</text></div>
-	<div class="legend" width="200px" height="200px"></div>
+	<div id="title_bar">
+		<div width="200px"><text id="title">US Wildfires</text></div>
+		<div id="fire_legend"></div>
+	</div>
 	<div id="layout_main">
 		<div id="layout_left">
 			<div class="mainMap"></div>
@@ -123,6 +125,9 @@
 							.attr("width", map_width)
 							.attr("height", map_height);
 
+			svg.on("mouseover", function() { svg.style("cursor", "move"); })
+				.on("mouseout", function() { svg.style("cursor", "pointer"); });
+
 			var g = svg.append("g");
 
 			drawMap(data, topo, path, projection, lat_long_year_map, curr_min_year, curr_max_year);
@@ -134,13 +139,29 @@
 		});
 
 		var drawLegend = function () {
-			var svg = d3.select(".legend").select("svg");
-			svg.append("circle")
-			  .attr("cx", "0")
-			  .attr("cy", "0")
-			  .attr("r", "20")
-			  .attr("fill", "black")
-			  ;
+			var svg = d3.select("#fire_legend").append("svg")
+						.attr("width", 800)
+						.attr("height", 50);
+
+  			svg.append("g").append("text")
+  				.text("< 0.25 Acres")
+  				.attr("transform", "translate(300, " + 25 +")");
+
+			var radius_sizes = [3, 4, 5, 7, 9, 11, 13];
+			for (var i = 0; i < radius_sizes.length; i++) {
+				r = radius_sizes[i];
+				svg.append("circle")
+				  .attr("cx", 400 + i * 30)
+				  .attr("cy", 20 - i)
+				  .attr("r", r)
+				  .attr("fill", "darkgrey")
+				  .style("fill", "steelblue")
+				  ;
+			}
+
+			svg.append("g").append("text")
+  				.text("> 5000 Acres")
+  				.attr("transform", "translate(600, " + 20 +")");
 		}
 
 		var updateTableauViz = function(min_year, max_year, lat_long_range) {
@@ -273,10 +294,11 @@
 			var y = d3.scale.linear()
 			    .range([height, 0])
 			    .domain([0, d3.max(yearlyFireCounts, function(d) { return d.values + 100; })]);
-
+			
 			var xAxis = d3.svg.axis()
-			    .scale(x)
-			    .orient("bottom")
+                .scale(x)
+                .orient("bottom")
+                    .tickFormat(d3.format('d'));
 
 			var yAxis = d3.svg.axis()
 			    .scale(y)

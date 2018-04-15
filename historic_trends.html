@@ -3,12 +3,12 @@
 <head>
 	<title>US Wildfires</title>
 
-	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-	<script src="https://d3js.org/topojson.v1.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
 	<script src="https://d3js.org/d3-time.v1.min.js"></script>
 	<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
 	<script src="d3.legend.js"></script>
-	<script src="https://public.tableau.com/javascripts/api/tableau-2.0.0.min.js"></script>
+	<script src="http://public.tableau.com/javascripts/api/tableau-2.0.0.min.js"></script>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link href="css/index_style.css" rel="stylesheet" type="text/css">
@@ -33,7 +33,7 @@
 <body>
 	<div id="container" style="width:100%">
 	<div id="tableau_viz" style="float:left; width:75%;"></div>
-	<div id="narrative" style="float:right; width:25%;">
+	<div id="narrative" style="float:left; width: 300px; word-wrap: break-word;">
 		
 		<h2 align="left">Historic Trends of Wildfires.</h2>
 		<p align="left">
@@ -43,13 +43,21 @@
 		</p>
 		<h3 align="left">Goal: Understand historic trends of Wildfires.</h3>
 		<p align="left">
-			<h4>
-				<ol>
-					<li>Which year has the most wildfires?</li>
-					<br/>
-					<li>Which year has the most Arson wildfires?</li>
-				</ol>
-			</h4>
+			<ol>
+				<li>Which year has the most wildfires?</li>
+				<br/>
+				<li>Which year has the most Arson wildfires?</li>
+			</ol>
+		</p>
+		<h3 align="left">Insights</h3>
+		<p align="left">
+			<ol>
+				<li>It's surprising to see that most wildfires result from Causes that have an element of human involvement.<br/>
+				You can see this by filtering to specific Causes in the graphs.</li>	
+				<br/>			
+				<li>Arson, and Debris Burning account for the most wildfires among causes that have human involvement.<br/>
+				You can see this by filtering to specific Causes in the graphs.</li>
+			</ol>
 		</p>		
 	</div>		
 	</div>
@@ -63,7 +71,7 @@
 		var tableauvizOptions = {
 			showTabs           : false,
 			hideToolbar        : true,
-			width              : "1440px",
+			width              : "1080px",
 			height             : "1080px"
 		};
 		

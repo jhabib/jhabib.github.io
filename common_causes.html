@@ -3,12 +3,12 @@
 <head>
 	<title>US Wildfires</title>
 
-	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-	<script src="https://d3js.org/topojson.v1.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
 	<script src="https://d3js.org/d3-time.v1.min.js"></script>
 	<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
 	<script src="d3.legend.js"></script>
-	<script src="https://public.tableau.com/javascripts/api/tableau-2.0.0.min.js"></script>
+	<script src="http://public.tableau.com/javascripts/api/tableau-2.0.0.min.js"></script>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link href="css/index_style.css" rel="stylesheet" type="text/css">
@@ -34,7 +34,7 @@
 
 	<div id="container" style="width:100%">
 	<div id="tableau_viz" style="float:left; width:75%;"></div>
-	<div id="narrative" style="float:right; width:25%;">
+	<div id="narrative" style="float:left; width: 300px; word-wrap: break-word;">
 		
 		<h2 align="left">Common causes of Wildfires.</h2>
 		<p align="left">
@@ -45,16 +45,24 @@
 
 		<h3 align="left">Goal: Find main causes of Wild Fires.</h3>
 		<p align="left">
-			<h4>
-				<ol>
-					<li>Find the most common Cause of wildfire.</li>
-					<br/>
-					<li>Which Cause results in the longest or largest wildifre?</li>
-					<br/>
-					<li>Which Causes have grown in significance over time?</li>
-				</ol>
-			</h4>
+			<ol>
+				<li>Find the most common Cause of wildfire.</li>
+				<br/>
+				<li>Which Cause results in the longest or largest wildifre?</li>
+				<br/>
+				<li>Which Causes have grown in significance over time?</li>
+			</ol>
 		</p>
+		<h3 align="left">Insights</h3>
+		<p align="left">
+			<ol>
+				<li>Lightning leads to the longest and largest wildfires.</li>	
+				<br/>			
+				<li>Debris burning wildfires seem to be growing in significance over time.</li>
+				<br/>
+				<li>It's surprising that more and more wildfires are being classified as Miscellaneous (sharpest slope). It would be prudent to analyze these wildfires and see if we can create new categories.</li>
+			</ol>
+		</p>				
 	</div>		
 	</div>
 
@@ -67,8 +75,8 @@
 		var tableauvizOptions = {
 			showTabs           : false,
 			hideToolbar        : true,
-			width              : "1000px",
-			height             : "1000px"
+			width              : "1080px",
+			height             : "1080px"
 		};
 		
 		currentViz_right = new tableauSoftware.Viz(document.getElementById('tableau_viz'), common_causes_url, tableauvizOptions);

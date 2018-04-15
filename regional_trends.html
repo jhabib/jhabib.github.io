@@ -3,12 +3,12 @@
 <head>
 	<title>US Wildfires</title>
 
-	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-	<script src="https://d3js.org/topojson.v1.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
 	<script src="https://d3js.org/d3-time.v1.min.js"></script>
 	<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
 	<script src="d3.legend.js"></script>
-	<script src="https://public.tableau.com/javascripts/api/tableau-2.0.0.min.js"></script>
+	<script src="http://public.tableau.com/javascripts/api/tableau-2.0.0.min.js"></script>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link href="css/index_style.css" rel="stylesheet" type="text/css">
@@ -33,7 +33,7 @@
 <body>
 	<div id="container" style="width:100%">
 	<div id="tableau_viz" style="float:left; width:75%;"></div>
-	<div id="narrative" style="float:right; width:25%;">
+	<div id="narrative" style="float:left; width: 300px; word-wrap: break-word;">
 		
 		<h2 align="left">Regional trends of Wildfires.</h2>
 		<p align="left">
@@ -43,16 +43,22 @@
 		</p>
 		<h3 align="left">Goal: Understand Regional trends of Wildfires.</h3>
 		<p align="left">
-			<h4>
-				<ol>
-					<li>Which top 5 States have the most Debris Burning wildfires?</li>
-					<br/>
-					<li>Which State has the largest Wildfires? What are the Causes of those Wildfires</li>
-					<br/>
-					<li>What are the main Causes of Wildfires in Hawaii and Puerto Rico?</li>
-				</ol>
-			</h4>
-		</p>		
+			<ol>
+				<li>Which top 5 States have the most Debris Burning wildfires?</li>
+				<br/>
+				<li>Which State has the largest Wildfires? What are the Causes of those Wildfires</li>
+				<br/>
+				<li>What are the main Causes of Wildfires in Hawaii and Puerto Rico?</li>
+			</ol>
+		</p>
+		<h3 align="left">Insights</h3>
+		<p align="left">
+			<ol>
+				<li>We see that California, Georgia, Texas, North Carolina and Florida have the most number of wildfires. You can see this by sorting the bar chart on the y-axis. It is surprising that we mostly associate wildfires with California but there are a lot of wildfires in places like Georgia, North Carolina and Florida.</li>	
+				<br/>
+				<li>Lightning is the leading Cause in the North and South West regions of US whereas Debris burning is prominent in the Mid-West and Eastern regions of US.</li>
+			</ol>
+		</p>						
 	</div>		
 	</div>
 
@@ -65,7 +71,7 @@
 		var tableauvizOptions = {
 			showTabs           : false,
 			hideToolbar        : true,
-			width              : "1440px",
+			width              : "1080px",
 			height             : "1080px"
 		};
 		
