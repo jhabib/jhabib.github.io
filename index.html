@@ -2,120 +2,99 @@
 <html>
 <head>
 	<title>US Wildfires</title>
+
 	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	<script src="http://d3js.org/topojson.v1.min.js"></script>
 	<script src="https://d3js.org/d3-time.v1.min.js"></script>
 	<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
 	<script src="d3.legend.js"></script>
+	<script src="http://public.tableau.com/javascripts/api/tableau-2.0.0.min.js"></script>
 
-	<style type="text/css">
-	.feature {
-		fill: none;
-		stroke: grey;
-		stroke-width: 1px;
-		stroke-linejoin: round;
-	}
-	.mesh {
-		fill: none;
-		stroke: darkgrey;
-		stroke-width: 2px;
-		stroke-linejoin: round;
-	}
-	h1 {
-		font-family: sans-serif;
-	}
-	.sliderDiv {
-		width: 950px;
-		height: 25px;
-	}
-	.slider {
-		width: 900px !important;
-	}
-	text {
-		font-family: sans-serif;
-	}
-	.chartTitle {
-		font-size:18px;
-	}
-	.xaxis path,
-	.yaxis path {
-		fill: #777;
-		stroke-opacity: 0.5;
-	}
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href="css/index_style.css" rel="stylesheet" type="text/css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-	.legend rect {
-	  fill:white;
-	  stroke:black;
-	  opacity:0.8;
-	}
+	<nav class="navbar navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href="index.html">US Wildfires</a>
+	    </div>
+	    <ul class="nav navbar-nav">
+	      <li class="active"><a href="index.html">Home</a></li>
+	      <li><a href="historic_trends.html">Historic Trends</a></li>
+	      <li><a href="regional_trends.html">Regional Trends</a></li>
+	      <li><a href="common_causes.html">Common Causes</a></li>
+	    </ul>
+	  </div>
+	</nav>
 
-	#tooltip {
-		position: absolute;
-		width: 200;
-		height: auto;
-		padding: 10px;
-		background-color: white;
-		-webkit-border-radius: 10px;
-		-mox-border-radius: 10px;
-		border-radius: 10px;
-		-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-		-mox-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-		box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-		pointer-events: none;
-		/* white-space: pre-line; */
-		word-wrap: break-word;
-	}
-
-	#tooltip.hidden {
-		display: none;
-	}
-
-	#tooltip p{
-		margin: 0;
-		font-family: sans-serif;
-		font-size: 16px;
-		line-height: 20px;
-	}
-	</style>
 </head>
+
 <body>
-	<h1 id="title">US Wildfires</h1>
-	<div class="mainMap"></div><br/>
-	<div class="sliderDiv"></div>
-	<div class="weatherChart"></div>
-	<div class="dataChart"></div>
-	<div class="legend"></div>
+	<div width="200px"><text id="title">US Wildfires</text></div>
+	<div class="legend" width="200px" height="200px"></div>
+	<div id="layout_main">
+		<div id="layout_left">
+			<div class="mainMap"></div>
+			<div class='timeSeriesDiv'></div>
+		</div>
+		<div id="layout_right">
+			<div id="viz_right"></div>
+		</div>
+	</div>
+
 	<div id="tooltip" class="hidden">
-			<p><strong>Key Info</strong></p>
-			<p><span id="value">100</span></p>
+		<p><strong>Key Info</strong></p>
+		<p><span id="value"></span></p>
+		<p><span id="latitude"></span></p>
+		<p><span id="longitude"></span></p>
+	</div>
+
+	<!--<div class="legend"></div>-->
+
+	<script>
+		var url_right = 'https://public.tableau.com/views/FiresandWeatherinUnitedStates1997-2005/DurationSizeCause?:showVizHome=no&:toolbar=no&:display_count=no';
+
+		var vizOptions_right = {
+			showTabs           : false,
+			hideToolbar        : true,
+			width              : "1100px",
+			height             : "1050px"
+		};
+		
+		currentViz_right = new tableauSoftware.Viz(document.getElementById('viz_right'), url_right, vizOptions_right);
+      
+	</script>
+
 	<script type="text/javascript">
 
 	var map_width = 950,
-		map_height = 550;
+		map_height = 500;
 
 	// Maps fire class to a radius size
-	var firesize_class_radius = { "A": 3,
-								  "B": 5,
-								  "C": 7,
-								  "D": 9,
-								  "E": 11,
-								  "F": 13,
-								  "G": 15 };
+	var firesize_class_radius = { "A": 2,
+								  "B": 3,
+								  "C": 5,
+								  "D": 7,
+								  "E": 9,
+								  "F": 11,
+								  "G": 13 };
 
 	// Define possible fire causes (to use for colors)
-	var fire_causes_color_map = { "Debris Burning": "#e6194b",
-					              "Miscellaneous": "#3cb44b",
-					              "Arson": "#ffe119",
-					              "Lightning": "#0082c8",
-					              "Missing/Undefined": "#f58231",
-					              "Equipment Use": "#911eb4",
-					              "Campfire": "#46f0f0",
-					              "Children": "#f032e6",
-					              "Smoking": "#d2f53c",
-					              "Railroad": "#fabebe",
-					              "Powerline": "#008080",
-					              "Fireworks": "#e6beff",
-					              "Structure": "#aa6e28"};
+	var fire_causes_color_map = { "Debris Burning": "#f4be85",
+					              "Miscellaneous": "#ebce74",
+					              "Arson": "#5879a3",
+					              "Lightning": "#b19943",
+					              "Missing/Undefined": "#5f9693",
+					              "Equipment Use": "#6d9f5a",
+					              "Campfire": "#a8cae5",
+					              "Children": "#e28f40",
+					              "Smoking": "#f0a19c",
+					              "Railroad": "#d0605e",
+					              "Powerline": "#93bbb6",
+					              "Fireworks": "#9dcf87",
+					              "Structure": "#78706f"};
 
 	// set projection
 	var projection = d3.geo.albers();
@@ -123,53 +102,63 @@
 	// create path variable
 	var path = d3.geo.path().projection(projection);
 
-	var curr_zoom_translate;
-	var curr_zoom_scale;
-	var curr_year = 2000;
+	var curr_zoom_translate = [-3.623460483197732, -8.708676481227371];
+	var curr_zoom_scale = 1.0;
+	var curr_min_year = 1993.5, curr_max_year = 1994.5;
+	var curr_lat_long_range;
 
 	d3.json("data/us.json", function(error, topo) {
 		d3.csv("data/wildfires_10k_sample.csv", function(error, data) {
-			d3.csv("data/all_years_long.csv", function(error, weather_data) {
-				console.log(data);
-				console.log(weather_data);
+			console.log(data);
 
-				// build id --> latitude/latittude map
-				var lat_long_year_map = {};
-				for (var i = 0; i < data.length; i++) {
-					var d = data[i];
-					lat_long_year_map[String(d.OBJECT_ID)] = [d.LATITUDE, d.LONGITUDE, d.FIRE_YEAR];
-				}
+			// build id --> latitude/latittude map
+			var lat_long_year_map = {};
+			for (var i = 0; i < data.length; i++) {
+				var d = data[i];
+				lat_long_year_map[String(d.OBJECT_ID)] = [d.LATITUDE, d.LONGITUDE, d.FIRE_YEAR];
+			}
 
-				// create svg variable
-				var svg = d3.select(".mainMap").append("svg")
-								.attr("width", map_width)
-								.attr("height", map_height);
+			// create svg variable
+			var svg = d3.select(".mainMap").append("svg")
+							.attr("width", map_width)
+							.attr("height", map_height);
 
-				var g = svg.append("g");
+			var g = svg.append("g");
 
-				// Add slider
-				d3.select(".sliderDiv").append("text").text("Year: ");
-
-				var slider =  d3.select(".sliderDiv").append("input")
-					.attr("class", "slider")
-					.attr("type", "range")
-					.attr("id", "yearSlider")
-					.attr("min", 2000)
-					.attr("max", 2015)
-					.on("input", function() {
-						curr_year = parseInt(this.value);
-						drawPoints(data, weather_data, curr_year);
-						findViewportLatLong(data, lat_long_year_map, curr_zoom_translate, curr_zoom_scale, curr_year);
-						updateTitle(curr_year);
-					});
-
-				drawMap(data, topo, path, projection, lat_long_year_map, curr_year);
-				drawPoints(data, weather_data, curr_year);
-				updateTitle(curr_year);
-			});
+			drawMap(data, topo, path, projection, lat_long_year_map, curr_min_year, curr_max_year);
+			drawPoints(data, curr_min_year, curr_max_year);
+			updateTitle(curr_min_year, curr_max_year);
+			drawTimeSeries(data);
+			drawLegend();
+			updateTableauViz(curr_min_year, curr_max_year, [26.29, 48.97485, -124.1480556, -69.5]);
 		});
 
-		var drawMap = function(data, topo, path, projection, lat_long_year_map, curr_year) {
+		var drawLegend = function () {
+			var svg = d3.select(".legend").select("svg");
+			svg.append("circle")
+			  .attr("cx", "0")
+			  .attr("cy", "0")
+			  .attr("r", "20")
+			  .attr("fill", "black")
+			  ;
+		}
+
+		var updateTableauViz = function(min_year, max_year, lat_long_range) {
+			curr_min_year = min_year
+			curr_max_year = max_year
+			curr_lat_long_range = lat_long_range;
+			if(min_year <= max_year && !(lat_long_range[0] == 0 && lat_long_range[1] == 0 && lat_long_range[2] == 0 && lat_long_range[3] == 0))
+			{
+				currentViz_right.getWorkbook().changeParameterValueAsync('min_year', min_year);
+				currentViz_right.getWorkbook().changeParameterValueAsync('max_year', max_year);
+				currentViz_right.getWorkbook().changeParameterValueAsync('min_lat', lat_long_range[0]);
+				currentViz_right.getWorkbook().changeParameterValueAsync('max_lat', lat_long_range[1]);
+				currentViz_right.getWorkbook().changeParameterValueAsync('min_long', lat_long_range[2]);
+				currentViz_right.getWorkbook().changeParameterValueAsync('max_long', lat_long_range[3]);
+			}
+		}
+
+		var drawMap = function(data, topo, path, projection, lat_long_year_map, min_year, max_year) {
 		  	states = topojson.feature(topo, topo.objects.states).features;
 
 		  	var svg = d3.select(".mainMap").select("svg");
@@ -195,11 +184,15 @@
 				.on("zoom",function(){
 					curr_zoom_translate = d3.event.translate;
 					curr_zoom_scale = d3.event.scale;
-					zoomTo(curr_zoom_translate, curr_zoom_scale);
+					zoomTo(curr_zoom_translate, curr_zoom_scale);					
+				})
+				.on("zoomend", function(){
 					if (curr_zoom_translate != null && curr_zoom_scale != null) {
-						findViewportLatLong(data, lat_long_year_map, curr_zoom_translate, curr_zoom_scale, curr_year);
+						lat_long_range = findViewportLatLong(data, lat_long_year_map, curr_zoom_translate, curr_zoom_scale, curr_min_year, curr_max_year);
+						updateTableauViz(curr_min_year, curr_max_year, lat_long_range);
 					}
-				});
+				})
+			;
 
 			var zoomTo = function(translate, scale) {
 				g.attr("transform","translate("+ translate.join(",")+")scale("+scale+")");
@@ -208,9 +201,9 @@
 			d3.select(".mainMap").select("svg").call(zoom);
 		}
 
-		var drawPoints = function(data, weather_data, year) {
+		var drawPoints = function(data, min_year, max_year) {
 			var filtered_data = data.filter(function(d) {
-				return d.FIRE_YEAR == year;
+				return d.FIRE_YEAR >= min_year && d.FIRE_YEAR <= max_year;
 			});
 
 			var g = d3.select(".mainMap").select("svg").select("g");
@@ -234,7 +227,6 @@
 				.attr("data-legend", function(d) {return d.STAT_CAUSE_DESCR})
 				.on("mouseover",function(d){
 					var id = d3.select(this).attr("id");
-					//drawWeatherChart(weather_data, id);
 
 					// Tooltip on mouseover
 					var filtered_data = data.filter(function(d){
@@ -248,193 +240,200 @@
 						.style("left", d3.select(this).attr("cx") + "px")
 						.style("top", d3.select(this).attr("cy") + "px")
 						.select("#value")
-						.html("Fire Name: " + d.FIRE_NAME + "<br/>" + "Year: " + d.FIRE_YEAR + "<br/>" + "Cause: " + d.STAT_CAUSE_DESCR)
+						.html("Fire Name: " + d.FIRE_NAME + "<br/>" 
+							+ "Discovered on: " + julianIntToDate(d.DISCOVERY_DATE) + "<br/>"
+							+ "Contained on: " + julianIntToDate(d.CONT_DATE) + "<br/>"
+							+ "Cause: " + d.STAT_CAUSE_DESCR + "<br/>" 
+							+ "Size (acres): " + d.FIRE_SIZE + "<br/>" 
+							+ "Latitude: " + lat + "<br/>" 
+							+ "Longitude: " + long
+							);
 
 					d3.select("#tooltip").classed("hidden", false);
 				})
 				.on("mouseout", function() {
 					d3.select("#tooltip").classed("hidden",true);
 				});
+		}
 
-				// Create Legend
-				var legend = g.append("g")
-					.attr("class","legend")
-					// .attr("transform","translate(" + map_width - 1 + "," + "50)")
-					.attr("transform","translate(20,375)")
-					.style("font-size","12px")
-					.call(d3.legend)
+		var drawTimeSeries = function(data) {
+			var yearlyFireCounts = d3.nest()
+			  .key(function(d) { return d.FIRE_YEAR; })
+			  .rollup(function(v) { return v.length; })
+			  .entries(data);
 
-				setTimeout(function() {
-					legend
-						.style("font-size","12px")
-						.attr("data-style-padding",10)
-						.call(d3.legend)
-						},1000)
+			var margin = {top: 60, right: 70, bottom: 60, left: 100},
+			    width = 960 - margin.left - margin.right,
+			    height = 500 - margin.top - margin.bottom;
+
+			var x = d3.scale.linear()
+			    .range([0, width])
+			    .domain([1991, 2016]);
+
+			var y = d3.scale.linear()
+			    .range([height, 0])
+			    .domain([0, d3.max(yearlyFireCounts, function(d) { return d.values + 100; })]);
+
+			var xAxis = d3.svg.axis()
+			    .scale(x)
+			    .orient("bottom")
+
+			var yAxis = d3.svg.axis()
+			    .scale(y)
+			    .orient("left")
+			    .ticks(11);
+
+			var svg = d3.select(".timeSeriesDiv").append("svg")
+			    .attr("width", width + margin.left + margin.right)
+			    .attr("height", height + margin.top + margin.bottom)
+			  .append("g")
+			    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+			svg.append("g")
+			    .attr("class", "axis")
+			    .attr("clip-path", "url(#clip)")
+			    .attr("transform", "translate(0," + height + ")")
+			    .call(xAxis);
+
+			svg.append("g")
+			    .attr("class", "axis")
+			    .call(yAxis);
+
+			points = svg.selectAll(".point")
+			    .data(yearlyFireCounts)
+			  .enter().append("circle")
+			    .attr("class", "point")
+			    .attr("clip-path", "url(#clip)")
+			    .attr("r", "3px")
+			    .attr("cx", function(d) { return x(d.key); })
+			    .attr("cy", function(d) { return y(d.values); });
+
+			var line = d3.svg.line()
+		      .x(function(d) { return x(d.key);})
+		      .y(function(d) { return y(d.values);});
+
+		    svg.append("path")
+		      .datum(yearlyFireCounts)
+		      .attr("d", line)
+		      .attr("fill", "none")
+		      .attr("stroke", "steelblue")
+		      .attr("stroke-width", "2");
+
+		    svg.append("g").append("text")
+  			.text("Total Wildfires by Year")
+  			.style("font-size", "20px")
+  			.attr("transform", "translate(-40, " + (height-390) +")");
+
+  			svg.append("g").append("text")
+  			.text("Year")
+  			.attr("transform", "translate(380, " + (height + 40) +")");
+
+			var brush = d3.svg.brush()
+			    .x(x)
+			    .on("brush", brushmove)
+			    .on("brushend", brushend)
+			    .extent([curr_min_year, curr_max_year]);
+
+			svg.append("g")
+			    .attr("class", "brush")
+			    .call(brush)
+			  .selectAll('rect')
+			    .attr('height', height);
+
+			svg.append("defs").append("clipPath")
+			    .attr("id", "clip")
+			  .append("rect")
+			    .attr("width", width)
+			    .attr("height", height + 20);		
+
+			function brushmove() {
+				min_year = Math.ceil(brush.extent()[0]);
+				max_year = Math.floor(brush.extent()[1]);
+				if (min_year <= max_year) {
+					updateTitle(min_year, max_year);
+			   		drawPoints(data, min_year, max_year);
+			    }
+			}
+
+			function brushend() {
+				curr_min_year = Math.ceil(brush.extent()[0]);
+				curr_max_year = Math.floor(brush.extent()[1]);
+				updateTableauViz(curr_min_year, curr_max_year, curr_lat_long_range);
+			}
+
+
 		}
 
 		// Finds the min and max lat and longs of the data points in the viewport
-		var findViewportLatLong = function(data, lat_long_year_map, translate, scale, curr_year) {	
-			var min_lat = Number.MAX_SAFE_INTEGER;
-			var max_lat = Number.MIN_SAFE_INTEGER;
-			var min_long = Number.MAX_SAFE_INTEGER;
-			var max_long = Number.MIN_SAFE_INTEGER;
+		var findViewportLatLong = function(data, lat_long_year_map, translate, scale, min_year, max_year) {	
+			var min_lat = 1000;
+			var max_lat = -1000;
+			var min_long = 1000;
+			var max_long = -1000;
 
 			var count = 0;
 
-			var cs = d3.selectAll("circle")[0];
+			var cs = d3.select(".mainMap").selectAll("circle")[0];
 			for (var i = 0; i < cs.length; i++) {
 				var c = cs[i];
 
-				if (c != null && c.attributes != null && c.attributes.id != null) {
+				count++;
+				var id = c.attributes.id.value;
+				var cx = c.attributes.cx.value;
+				var cy = c.attributes.cy.value;
+				var transformed_cx = (cx * scale) + translate[0];
+				var transformed_cy = (cy * scale) + translate[1];
+				var lat = parseFloat(lat_long_year_map[id][0]);
+				var long = parseFloat(lat_long_year_map[id][1]);
+				var year = lat_long_year_map[id][2];
+				
+				// Check if circle is in the viewport
+				if (transformed_cx > 0 && transformed_cy > 0 && transformed_cx <= map_width && transformed_cy <= map_height && year >= min_year && year <= max_year) {
+					// Check if the circle is the max or min lat/long so far. If so, update the max/min lat/long
+					if (lat < min_lat) { min_lat = lat; }
+					if (lat > max_lat) { max_lat = lat; }
+					if (long < min_long) { min_long = long; }
+					if (long > max_long) { max_long = long; }
 					count++;
-					var id = c.attributes.id.value;
-					var cx = c.attributes.cx.value;
-					var cy = c.attributes.cy.value;
-					var transformed_cx = (cx * scale) + translate[0];
-					var transformed_cy = (cy * scale) + translate[1];
-					var lat = lat_long_year_map[id][0];
-					var long = lat_long_year_map[id][1];
-					var year = lat_long_year_map[id][2];
-					
-					// Check if circle is in the viewport
-					if (transformed_cx > 0 && transformed_cy > 0 && transformed_cx <= map_width && transformed_cy <= map_height && year == curr_year) {
-						// Check if the circle is the max or min lat/long so far. If so, update the max/min lat/long
-						if (lat < min_lat) { min_lat = lat; }
-						if (lat > max_lat) { max_lat = lat; }
-						if (lat < min_long) { min_long = long; }
-						if (lat > max_long) { max_long = long; }
-						count++;
-					}
 				}
 			}
 
+			if (min_lat == 1000 || max_lat == -1000 || min_long == 1000 || max_long == -1000) {
+				min_lat = 0, max_lat = 0, min_long = 0, max_long = 0;
+			}
+
 			ret_arr = [ min_lat, max_lat, min_long, max_long ];
-			console.log(ret_arr);
-			console.log(count);
 			return ret_arr;
 		}
 
-		// To do: Mohammad to draw weather chart here
-		var drawWeatherChart = function (weather_data, id) {
-			// This is the id of the data point
-
-			var formatDate = d3.timeFormat("%Y-%m-%d");
-			var parseDate = d3.timeParse("%Y-%m-%d");
-
-			var filtered_weather_data = weather_data.filter(function(d){
-				return d.FIRE_ID == id;
-			});
-
-			filtered_weather_data.sort(function(x, y){
-   				return d3.ascending(parseDate(x.OBS_DATE), parseDate(y.OBS_DATE));
-			})
-
-			// Set width of all chart components
-			var width_weatherchart = 950;
-			var height_data = 300;
-			var height_xaxis = 50;
-			var margin_weatherChart = {top: 50, right: 50, bottom: 20, left: 100};
-
-			var width_data = width_weatherchart - margin_weatherChart.right - margin_weatherChart.left;
-			var width_xaxis = width_data;
-
-			// Set width and height of the weatherChart
-			var width_weatherchart = width_data + margin_weatherChart.left + margin_weatherChart.right;
-			var height_weatherchart = height_data + height_xaxis + margin_weatherChart.top + margin_weatherChart.bottom;
-
-			var min_obs_date = d3.min(filtered_weather_data, function(d) { return parseDate(d.OBS_DATE); });
-			var max_obs_date = d3.max(filtered_weather_data, function(d) { return parseDate(d.OBS_DATE); });
-
-			var min_prcp = d3.min(filtered_weather_data, function(d) { return d.PRCP; });
-			var max_prcp = d3.max(filtered_weather_data, function(d) { return d.PRCP; });
-
-			x_scale_prcp = d3.scale.linear()
-			  .domain([min_obs_date, max_obs_date])
-			  .range([margin_weatherChart.left, margin_weatherChart.left + width_data]);
-
-			y_scale_prcp = d3.scale.linear()
-			  .domain([0, 100]) // 0% to 100% percipitation
-			  .range([height_data + margin_weatherChart.top, margin_weatherChart.top]);
-
-			var x_axis_prcp = d3.svg.axis()
-				.scale(x_scale_prcp)
-				.orient("bottom")
-				.ticks(10)
-				.tickFormat(formatDate)
-				;
-
-			var y_axis_prcp = d3.svg.axis()
-				.scale(y_scale_prcp)
-				.orient("left")
-				.ticks(10)
-				;
-
-			// Remove previously drawn weatherChart
-			d3.select(".weatherChart").select("svg").remove();
-
-			// Draw weatherChart
-			var svg = d3.select(".weatherChart").append("svg")
-				.attr("width", width_weatherchart)
-				.attr("height", height_weatherchart);
-
-			// Draw x-axis
-			svg.append("g")
-			  .attr("class", "xaxis")
-			  .attr("width", width_xaxis)
-			  .attr("height", height_xaxis)
-			  .attr("transform", "translate(0," + (margin_weatherChart.top + height_data) + ")")
-			  .call(x_axis_prcp);
-
-			// Draw y-axis label
-			svg.append("g").append("text")
-  				.text("Date")
-  				.attr("transform", "translate("+ ((margin_weatherChart.left + width_xaxis)/2) +", " + (margin_weatherChart.top + height_data + 40) +")");
-
-			// Draw y-axis
-			svg.append("g")
-			  .attr("class", "yaxis")
-			  .attr("width", 100)
-			  .attr("height", 50)
-			  .attr("transform", "translate(" + (margin_weatherChart.left) + ",0)")
-			  .call(y_axis_prcp);
-
-			// Draw y-axis label
-			svg.append("g").append("text")
-  				.text("% Percipitation")
-  				.attr("transform", "translate(0, " + (margin_weatherChart.top - 15) +")");
-
-			// Draw chart title
-			svg.append("g").append("text")
-				.attr("class", "chartTitle")
-  				.text("Percent Percipitation During the Incident")
-  				.attr("transform", "translate("+ ((margin_weatherChart.left + width_xaxis)/2 - 100) +", " + (margin_weatherChart.top - 20) +")");
-
-			// Draw chart line
-			var valueline = d3.svg.line()
-				.x(function(d) { return x_scale_prcp(parseDate(d.OBS_DATE)); })
-				.y(function(d) { return y_scale_prcp(d.PRCP); })
-			;
-
-			var g = svg.append("g");
-
-			// Remove all previously drawn line
-			g.selectAll("path").remove();
-
-			// add line to g
-			g.append("path")
-				.attr("class", "line")
-				.attr("d", valueline(filtered_weather_data))
-				.attr("fill", "none")
-  				.attr("stroke-width", "2")
-  				.attr("stroke", "steelblue")
-  				;
+		var updateTitle = function(min_year, max_year){
+			min_year = Math.ceil(min_year);
+			max_year = Math.floor(max_year);
+			if(min_year == max_year) {
+				d3.select("#title").text(function() { return "US Wildfires - " + min_year;});
+			} else
+			{
+				d3.select("#title").text(function() { return "US Wildfires - " + min_year + " to " + max_year;});
+			}
 		}
-
-		var updateTitle = function(year){
-			d3.select("#title").text(function() { return "US Wildfires - " + year;});
-		}
-
 	});
+
+	function julianIntToDate(n) {
+	    // convert a Julian number to a Gregorian Date.
+	    //    S.Boisseau / BubblingApp.com / 2014
+	    var a = n + 32044;
+	    var b = Math.floor(((4*a) + 3)/146097);
+	    var c = a - Math.floor((146097*b)/4);
+	    var d = Math.floor(((4*c) + 3)/1461);
+	    var e = c - Math.floor((1461 * d)/4);
+	    var f = Math.floor(((5*e) + 2)/153);
+
+	    var D = e + 1 - Math.floor(((153*f) + 2)/5);
+	    var M = f + 3 - 12 - Math.round(f/10);
+	    var Y = (100*b) + d - 4800 + Math.floor(f/10);
+
+    	return new Date(Y,M,D);
+	}
 
 	</script>
 </body>

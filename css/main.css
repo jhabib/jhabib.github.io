@@ -1,0 +1,56 @@
+#timeline .line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+#timeline .area {
+  /*fill: #969696;*/
+  fill: none;
+}
+
+/* .barChart .bar {
+  fill: steelblue;
+} */
+.barChart .x.axis path {
+  display: none;
+}
+
+
+#catTypes .x.axis {
+  text-anchor: end
+}
+
+#catTypes svg {
+	overflow: visible;
+}
+
+/* .point {
+  fill: black;
+  stroke: 1px; */
+
+  #tooltip {
+    position: absolute;
+    width: 200px;
+    height: auto;
+    padding: 10px;
+    background-color: white;
+    -webkit-border-radius: 10px;
+    -mox-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -mox-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+  }
+
+  #tooltip.hidden {
+    display: none;
+  }
+
+  #tooltip p {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+  }

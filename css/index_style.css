@@ -1,0 +1,81 @@
+	.feature {
+		fill: none;
+		stroke: grey;
+		stroke-width: 1px;
+		stroke-linejoin: round;
+	}
+	.mesh {
+		fill: none;
+		stroke: darkgrey;
+		stroke-width: 2px;
+		stroke-linejoin: round;
+	}
+	.sliderDiv {
+		width: 950px;
+		height: 25px;
+	}
+	.slider {
+		width: 900px !important;
+	}
+	text {
+		font-family: sans-serif;
+	}
+	.chartTitle {
+		font-size:18px;
+	}
+
+	.legend rect {
+	  fill:white;
+	  stroke:black;
+	  opacity:0.8;
+	}
+	#title {
+		font-size: 28px;
+	}
+
+	#tooltip {
+		position: absolute;
+		width: 200;
+		height: auto;
+		padding: 10px;
+		background-color: white;
+		-webkit-border-radius: 10px;
+		-mox-border-radius: 10px;
+		border-radius: 10px;
+		-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+		-mox-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+		box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+		pointer-events: none;
+		/* white-space: pre-line; */
+		word-wrap: break-word;
+	}
+
+	#tooltip.hidden {
+		display: none;
+	}
+
+	#tooltip p{
+		margin: 0;
+		font-family: sans-serif;
+		font-size: 16px;
+		line-height: 20px;
+	}
+
+	#layout_main {
+  		display: flex;
+	}
+
+	.brush .extent {
+	  stroke: #fff;
+	  fill-opacity: .125;
+	  shape-rendering: crispEdges;
+	}
+
+	.axis {
+		stroke : grey;
+		stroke-width: 1px;
+	}
+	.axis path{
+		fill: grey;
+		stroke-width: 1px;
+	}

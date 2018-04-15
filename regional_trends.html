@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>US Wildfires</title>
+
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
+	<script src="https://d3js.org/d3-time.v1.min.js"></script>
+	<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+	<script src="d3.legend.js"></script>
+	<script src="http://public.tableau.com/javascripts/api/tableau-2.0.0.min.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href="css/index_style.css" rel="stylesheet" type="text/css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<nav class="navbar navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href="index.html">US Wildfires</a>
+	    </div>
+	    <ul class="nav navbar-nav">
+	      <li><a href="index.html">Home</a></li>
+	      <li><a href="historic_trends.html">Historic Trends</a></li>
+	      <li class="active"><a href="regional_trends.html">Regional Trends</a></li>
+	      <li><a href="common_causes.html">Common Causes</a></li>
+	    </ul>
+	  </div>
+	</nav>
+
+</head>
+<body>
+	<div id="container" style="width:100%">
+	<div id="tableau_viz" style="float:left; width:75%;"></div>
+	<div id="narrative" style="float:right; width:25%;">
+		
+		<h2 align="left">Regional trends of Wildfires.</h2>
+		<p align="left">
+			This page shows the regional trends of wild fires.<br/>
+			You can click on the graphs to filter by State.<br/>
+			Or, you can use the filters on the right hand side of the charts.
+		</p>
+		<h3 align="left">Goal: Understand Regional trends of Wildfires.</h3>
+		<p align="left">
+			<h4>
+				<ol>
+					<li>Which top 5 States have the most Debris Burning wildfires?</li>
+					<br/>
+					<li>Which State has the largest Wildfires? What are the Causes of those Wildfires</li>
+					<br/>
+					<li>What are the main Causes of Wildfires in Hawaii and Puerto Rico?</li>
+				</ol>
+			</h4>
+		</p>		
+	</div>		
+	</div>
+
+	<script>
+		var historic_trends_url = 'https://public.tableau.com/views/fire_weather_graphs/HistoricTrends?:showVizHome=no&:toolbar=no&:display_count=no&:embed=true&:tabs=no'
+		var regional_trends_url = 'https://public.tableau.com/views/fire_weather_graphs/RegionalTrends?:showVizHome=no&:toolbar=no&:display_count=no&:embed=true&:tabs=no'
+		var common_causes_url = 'https://public.tableau.com/views/fire_weather_graphs/CommonCauses?:showVizHome=no&:toolbar=no&:display_count=no&:embed=true&:tabs=no'
+		var tableau_url = 'https://public.tableau.com/views/FiresandWeatherinUnitedStates1997-2005/DurationSizeCause?:showVizHome=no&:toolbar=no&:display_count=no';
+
+		var tableauvizOptions = {
+			showTabs           : false,
+			hideToolbar        : true,
+			width              : "1440px",
+			height             : "1080px"
+		};
+		
+		currentViz_right = new tableauSoftware.Viz(document.getElementById('tableau_viz'), regional_trends_url, tableauvizOptions);
+      
+	</script>
+</body>
+</html>
